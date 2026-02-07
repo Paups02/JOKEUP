@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0f0f23">
+  <meta name="description" content="JOKEUP - El joc de festa definitiu. Veritat o Repte, L'Impostor, Jo Mai Mai i molt m&eacute;s!">
+  <title>JOKEUP - El Joc de Festa Definitiu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- ============ PANTALLA WELCOME ============ -->
+    <section id="screen-welcome" class="screen active">
+      <div class="welcome-bg">
+        <div class="floating-emoji e1">&#127881;</div>
+        <div class="floating-emoji e2">&#127775;</div>
+        <div class="floating-emoji e3">&#127867;</div>
+        <div class="floating-emoji e4">&#128293;</div>
+        <div class="floating-emoji e5">&#128526;</div>
+        <div class="floating-emoji e6">&#127880;</div>
+      </div>
+      <div class="welcome-content">
+        <div class="logo-container">
+          <h1 class="logo">JOKE<span class="logo-accent">UP</span></h1>
+          <p class="tagline">El joc de festa definitiu</p>
+        </div>
+        <button class="btn btn-primary btn-lg pulse" onclick="App.goTo('screen-players')">
+          &#127918; Jugar
+        </button>
+        <p class="version">5 jocs &middot; 900+ preguntes &middot; 0 descàrregues</p>
+      </div>
+    </section>
+
+    <!-- ============ PANTALLA JUGADORS ============ -->
+    <section id="screen-players" class="screen">
+      <div class="screen-header">
+        <button class="btn-back" onclick="App.goTo('screen-welcome')">&#8592;</button>
+        <h2>Jugadors</h2>
+        <div class="spacer"></div>
+      </div>
+      <div class="screen-body">
+        <p class="subtitle">Afegeix els noms dels jugadors (mínim 3)</p>
+        <div class="input-group">
+          <input type="text" id="player-input" placeholder="Nom del jugador..." maxlength="15"
+                 onkeydown="if(event.key==='Enter')App.addPlayer()">
+          <button class="btn btn-accent" onclick="App.addPlayer()">+</button>
+        </div>
+        <div id="player-list" class="player-list"></div>
+        <div class="quick-add">
+          <p class="hint">O afegeix ràpid:</p>
+          <div class="quick-buttons">
+            <button class="btn btn-outline btn-sm" onclick="App.quickAddPlayers(3)">3 jugadors</button>
+            <button class="btn btn-outline btn-sm" onclick="App.quickAddPlayers(4)">4 jugadors</button>
+            <button class="btn btn-outline btn-sm" onclick="App.quickAddPlayers(6)">6 jugadors</button>
+          </div>
+        </div>
+      </div>
+      <div class="screen-footer">
+        <button id="btn-start-game" class="btn btn-primary btn-lg" onclick="App.goTo('screen-modes')" disabled>
+          Triar Joc &#8594;
+        </button>
+      </div>
+    </section>
+
+    <!-- ============ PANTALLA MODES DE JOC ============ -->
+    <section id="screen-modes" class="screen">
+      <div class="screen-header">
+        <button class="btn-back" onclick="App.goTo('screen-players')">&#8592;</button>
+        <h2>Tria un joc</h2>
+        <div class="spacer"></div>
+      </div>
+      <div class="screen-body modes-grid">
+
+        <div class="mode-card mode-truth" onclick="App.selectMode('truth-dare')">
+          <div class="mode-icon">&#128156;</div>
+          <h3>Veritat o Repte</h3>
+          <p>El clàssic reinventat. Tria veritat o repte i demostra el que vals.</p>
+          <span class="mode-players">2+ jugadors</span>
+        </div>
+
+        <div class="mode-card mode-impostor" onclick="App.selectMode('impostor')">
+          <div class="mode-icon">&#128373;</div>
+          <h3>L'Impostor</h3>
+          <p>Un jugador és l'espia. Descobreix-lo abans que sigui massa tard!</p>
+          <span class="mode-players">3+ jugadors</span>
+        </div>
+
+        <div class="mode-card mode-never" onclick="App.selectMode('never-ever')">
+          <div class="mode-icon">&#127867;</div>
+          <h3>Jo Mai Mai</h3>
+          <p>Confessa el que has fet... o beu si ho has fet!</p>
+          <span class="mode-players">2+ jugadors</span>
+        </div>
+
+        <div class="mode-card mode-likely" onclick="App.selectMode('most-likely')">
+          <div class="mode-icon">&#128073;</div>
+          <h3>Qui és Més Probable?</h3>
+          <p>Assenyala qui del grup és més probable que...</p>
+          <span class="mode-players">3+ jugadors</span>
+        </div>
+
+        <div class="mode-card mode-rather" onclick="App.selectMode('would-rather')">
+          <div class="mode-icon">&#9878;&#65039;</div>
+          <h3>Què Prefereixes?</h3>
+          <p>Dos opcions impossibles. Tria la menys dolenta!</p>
+          <span class="mode-players">2+ jugadors</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PANTALLA CATEGORIES ============ -->
+    <section id="screen-categories" class="screen">
+      <div class="screen-header">
+        <button class="btn-back" onclick="App.goTo('screen-modes')">&#8592;</button>
+        <h2 id="cat-title">Intensitat</h2>
+        <div class="spacer"></div>
+      </div>
+      <div class="screen-body">
+        <p class="subtitle">Tria el nivell d'intensitat</p>
+        <div id="category-list" class="category-list"></div>
+
+        <!-- Opcions extra per Impostor -->
+        <div id="impostor-options" class="impostor-options hidden">
+          <p class="subtitle" style="margin-top:1.5rem">Tria la temàtica</p>
+          <div id="impostor-themes" class="category-list"></div>
+        </div>
+      </div>
+      <div class="screen-footer">
+        <button class="btn btn-primary btn-lg" onclick="App.startGame()">
+          &#128640; Comença!
+        </button>
+      </div>
+    </section>
+
+    <!-- ============ PANTALLA JOC: VERITAT O REPTE ============ -->
+    <section id="screen-truth-dare" class="screen game-screen">
+      <div class="screen-header">
+        <button class="btn-back" onclick="App.exitGame()">&#10005;</button>
+        <h2>Veritat o Repte</h2>
+        <div class="round-counter" id="td-round"></div>
+      </div>
+      <div class="screen-body game-body">
+        <div class="current-player" id="td-player"></div>
+        <div id="td-choice" class="td-choice">
+          <button class="btn btn-truth btn-game" onclick="App.TruthDare.choose('truth')">
+            &#128172; Veritat
+          </button>
+          <button class="btn btn-dare btn-game" onclick="App.TruthDare.choose('dare')">
+            &#9889; Repte
+          </button>
+        </div>
+        <div id="td-card" class="game-card hidden">
+          <div class="card-type" id="td-card-type"></div>
+          <div class="card-text" id="td-card-text"></div>
+          <button class="btn btn-primary btn-lg" onclick="App.TruthDare.next()">
+            Fet! Següent &#8594;
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PANTALLA JOC: IMPOSTOR ============ -->
+    <section id="screen-impostor" class="screen game-screen">
+      <div class="screen-header">
+        <button class="btn-back" onclick="App.exitGame()">&#10005;</button>
+        <h2>L'Impostor</h2>
+        <div class="round-counter" id="imp-round"></div>
+      </div>
+      <div class="screen-body game-body">
+        <!-- Fase: Passar mòbil -->
+        <div id="imp-pass" class="game-phase">
+          <div class="pass-phone">
+            <div class="pass-icon">&#128241;</div>
+            <p class="pass-text">Passa el mòbil a</p>
+            <div class="current-player" id="imp-pass-player"></div>
+            <p class="hint">Només ell/a ha de mirar la pantalla!</p>
+            <button class="btn btn-primary btn-lg" onclick="App.Impostor.showWord()">
+              &#128064; Veure la meva paraula
+            </button>
+          </div>
+        </div>
+        <!-- Fase: Mostrar paraula -->
+        <div id="imp-word" class="game-phase hidden">
+          <div class="word-reveal">
+            <p class="word-label" id="imp-word-label">La teva paraula:</p>
+            <div class="word-card" id="imp-word-card"></div>
+            <p class="hint" id="imp-word-hint"></p>
+            <button class="btn btn-primary btn-lg" onclick="App.Impostor.hideWord()">
+              &#9989; Entès!
+            </button>
+          </div>
+        </div>
+        <!-- Fase: Discussió -->
+        <div id="imp-discuss" class="game-phase hidden">
+          <div class="discuss-phase">
+            <h3>&#128483;&#65039; Fase de Discussió</h3>
+            <p>Cada jugador ha de dir UNA pista sobre la seva paraula.<br>
+               L'impostor ha de dissimular!</p>
+            <div class="timer-container">
+              <div class="timer-circle" id="imp-timer-circle">
+                <span class="timer-text" id="imp-timer">2:00</span>
+              </div>
+            </div>
+            <div class="timer-controls">
+              <button class="btn btn-outline" onclick="App.Impostor.toggleTimer()" id="imp-timer-btn">
+                &#9654;&#65039; Iniciar
+              </button>
+              <button class="btn btn-outline" onclick="App.Impostor.resetTimer()">
+                &#128260; Reset
+              </button>
+            </div>
+            <button class="btn btn-primary btn-lg" onclick="App.Impostor.startVoting()" style="margin-top:1.5rem">
+              &#128499;&#65039; Votar!
+            </button>
+          </div>
+        </div>
+        <!-- Fase: Votació -->
+        <div id="imp-vote" class="game-phase hidden">
+          <div class="vote-phase">
+            <h3>&#128499;&#65039; Votació</h3>
+            <p id="imp-vote-text">Qui creus que és l'impostor?</p>
+            <div id="imp-vote-buttons" class="vote-grid"></div>
+          </div>
+        </div>
+        <!-- Fase: Resultat -->
+        <div id="imp-result" class="game-phase hidden">
+          <div class="result-phase">
+            <div class="result-icon" id="imp-result-icon"></div>
+            <h3 id="imp-result-title"></h3>
+            <p id="imp-result-text"></p>
+            <div id="imp-guess-section" class="hidden">
+              <p>L'impostor pot intentar endevinar la paraula!</p>
+              <div class="input-group">
+                <input type="text" id="imp-guess-input" placeholder="Escriu la paraula...">
+                <button class="btn btn-accent" onclick="App.Impostor.checkGuess()">&#10003;</button>
+              </div>
+            </div>
+            <div id="imp-final-result" class="hidden">
+              <p class="final-result-text" id="imp-final-text"></p>
+            </div>
+            <div class="result-words" id="imp-result-words"></div>
+            <button class="btn btn-primary btn-lg" onclick="App.Impostor.nextRound()" style="margin-top:1rem">
+              &#128260; Següent Ronda
+            </button>
+            <button class="btn btn-outline" onclick="App.exitGame()" style="margin-top:0.5rem">
+              &#127968; Tornar al menú
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PANTALLA JOC: JO MAI MAI ============ -->
+    <section id="screen-never-ever" class="screen game-screen">
+      <div class="screen-header">
+        <button class="btn-back" onclick="App.exitGame()">&#10005;</button>
+        <h2>Jo Mai Mai</h2>
+        <div class="round-counter" id="ne-round"></div>
+      </div>
+      <div class="screen-body game-body">
+        <div class="never-card">
+          <div class="ne-statement" id="ne-statement">
+            Jo mai mai...
+          </div>
+          <p class="hint">Qui ho hagi fet... beu! &#127867;</p>
+          <div class="ne-reactions">
+            <button class="btn btn-guilty btn-game" onclick="App.NeverEver.react(true)">
+              &#128563; Jo sí...
+            </button>
+            <button class="btn btn-innocent btn-game" onclick="App.NeverEver.react(false)">
+              &#128519; Jo mai!
+            </button>
+          </div>
+          <div id="ne-counter" class="ne-counter"></div>
+        </div>
+        <button class="btn btn-primary btn-lg" onclick="App.NeverEver.next()" style="margin-top:1.5rem">
+          Següent &#8594;
+        </button>
+      </div>
+    </section>
+
+    <!-- ============ PANTALLA JOC: QUI ÉS MÉS PROBABLE ============ -->
+    <section id="screen-most-likely" class="screen game-screen">
+      <div class="screen-header">
+        <button class="btn-back" onclick="App.exitGame()">&#10005;</button>
+        <h2>Qui és Més Probable?</h2>
+        <div class="round-counter" id="ml-round"></div>
+      </div>
+      <div class="screen-body game-body">
+        <!-- Fase: Pregunta -->
+        <div id="ml-question-phase" class="game-phase">
+          <div class="ml-statement" id="ml-statement"></div>
+          <p class="hint">A la de 3, tothom assenyala!</p>
+          <div class="countdown-display hidden" id="ml-countdown"></div>
+          <button class="btn btn-primary btn-lg" id="ml-count-btn" onclick="App.MostLikely.countdown()">
+            &#128588; Compte enrere!
+          </button>
+          <button class="btn btn-primary btn-lg hidden" id="ml-next-btn" onclick="App.MostLikely.next()">
+            Següent &#8594;
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PANTALLA JOC: QUÈ PREFEREIXES ============ -->
+    <section id="screen-would-rather" class="screen game-screen">
+      <div class="screen-header">
+        <button class="btn-back" onclick="App.exitGame()">&#10005;</button>
+        <h2>Què Prefereixes?</h2>
+        <div class="round-counter" id="wr-round"></div>
+      </div>
+      <div class="screen-body game-body">
+        <div class="rather-container">
+          <button class="btn btn-option-a btn-game" id="wr-option-a" onclick="App.WouldRather.choose('a')"></button>
+          <div class="rather-vs">O</div>
+          <button class="btn btn-option-b btn-game" id="wr-option-b" onclick="App.WouldRather.choose('b')"></button>
+        </div>
+        <div id="wr-result" class="wr-result hidden">
+          <div class="wr-bar">
+            <div class="wr-bar-a" id="wr-bar-a"></div>
+            <div class="wr-bar-b" id="wr-bar-b"></div>
+          </div>
+          <div class="wr-voters" id="wr-voters"></div>
+          <p class="hint" id="wr-minority-text"></p>
+          <button class="btn btn-primary btn-lg" onclick="App.WouldRather.next()">
+            Següent &#8594;
+          </button>
+        </div>
+        <!-- Votació pass-and-play -->
+        <div id="wr-voting" class="hidden">
+          <div class="pass-phone">
+            <div class="pass-icon">&#128241;</div>
+            <p class="pass-text">Torn de</p>
+            <div class="current-player" id="wr-voter-name"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SCOREBOARD OVERLAY ============ -->
+    <div id="scoreboard-overlay" class="overlay hidden">
+      <div class="overlay-content">
+        <h2>&#127942; Puntuacions</h2>
+        <div id="scoreboard-list" class="scoreboard-list"></div>
+        <button class="btn btn-primary" onclick="App.closeScoreboard()">Tancar</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
