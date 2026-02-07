@@ -1,0 +1,11 @@
+{
+  "name": "jokeup",
+  "version": "1.0.0",
+  "description": "JOKEUP - El joc de festa definitiu",
+  "scripts": {
+    "start": "npx serve -s . -l $PORT"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
